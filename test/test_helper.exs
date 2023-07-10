@@ -3,6 +3,8 @@ unless node() == :"first@127.0.0.1" do
   exit(1)
 end
 
+ExUnit.configure formatters: [JUnitFormatter, ExUnit.CLIFormatter]
+
 context = Noizu.Context.admin()
 Logger.configure(level: :warn)
 Application.ensure_all_started(:syn)

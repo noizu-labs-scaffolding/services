@@ -40,7 +40,7 @@ defmodule Noizu.Service do
   """
   def get_direct_link!(pool, R.ref() = ref, _context, _options \\ nil) do
     worker = apply(pool, :__worker__, [])
-    with {:ok, ref} <- apply(worker, :ref_ok, [ref]) do
+    with {:ok, ref} <- apply(worker, :ref, [ref]) do
       with {:ok, {pid, attributes}} <- Noizu.Service.DispatcherRouter.__lookup_worker_process__(ref) do
         M.link(node: attributes[:node], process: pid, recipient: ref)
       else
@@ -102,7 +102,7 @@ defmodule Noizu.Service do
       end
       
       def get_direct_link!(ref, context, options \\ nil) do
-        with {:ok, ref} <- apply(__worker__(), :ref_ok, [ref]) do
+        with {:ok, ref} <- apply(__worker__(), :ref, [ref]) do
           Noizu.Service.get_direct_link!(__pool__(), ref, context, options)
         end
         
@@ -156,36 +156,35 @@ defmodule Noizu.Service do
         {:noreply, state}
       end
 
-      def s_call!(identifier, message, context, options \\ nil) do
+      def s_call!(identifier, handler, args, context, options \\ nil) do
         with {:ok, ref} <- apply(__worker__(), :recipient, [identifier]) do
-          Noizu.Service.Types.Dispatch.s_call!(ref, message, context, options)
+          Noizu.Service.Types.Dispatch.s_call!(ref, handler, args, context, options)
         end
       end
-      def s_call(identifier, message, context, options \\ nil) do
+      def s_call(identifier, handler, args, context, options \\ nil) do
         with {:ok, ref} <- apply(__worker__(), :recipient, [identifier]) do
-          Noizu.Service.Types.Dispatch.s_call!(ref, message, context, options)
+          Noizu.Service.Types.Dispatch.s_call!(ref, handler, args, context, options)
         end
       end
 
-      def s_cast!(identifier, message, context, options \\ nil) do
+      def s_cast!(identifier, handler, args, context, options \\ nil) do
         with {:ok, ref} <- apply(__worker__(), :recipient, [identifier]) do
-          Noizu.Service.Types.Dispatch.s_cast!(ref, message, context, options)
+          Noizu.Service.Types.Dispatch.s_cast!(ref, handler, args, context, options)
         end
       end
-      def s_cast(identifier, message, context, options \\ nil) do
+      def s_cast(identifier, handler, args, context, options \\ nil) do
         with {:ok, ref} <- apply(__worker__(), :recipient, [identifier]) do
-          Noizu.Service.Types.Dispatch.s_cast(ref, message, context, options)
+          Noizu.Service.Types.Dispatch.s_cast(ref, handler, args, context, options)
         end
       end
       
-      def reload!(ref, context, options), do: s_call!(ref, :reload!, context, options)
-      def fetch(ref, type, context), do: s_call!(ref, {:fetch, type}, context)
-      def ping(ref, context), do: s_call(ref, :ping, context)
-      def ping(ref, context, options), do: s_call(ref, :ping, context, options)
-      def kill!(ref, context, options), do: s_call(ref, :kill!, context, options)
-      def crash!(ref, context, options), do: s_call(ref, :crash!, context, options)
-      def hibernate(ref, context, options), do: s_call!(ref, :hibernate, context, options)
-      def persist!(ref, context, options), do: s_call!(ref, :persist!, context, options)
+      def reload!(ref, context, options), do: s_call!(ref, :reload!, [], context, options)
+      def fetch(ref, type, context, options \\ nil), do: s_call!(ref, :fetch, [type], context, options)
+      def ping(ref, context, options \\ nil), do: s_call(ref, :ping, [], context, options)
+      def kill!(ref, context, options), do: s_call(ref, :kill!, [], context, options)
+      def crash!(ref, context, options), do: s_call(ref, :crash!, [], context, options)
+      def hibernate(ref, context, options), do: s_call!(ref, :hibernate, [], context, options)
+      def persist!(ref, context, options), do: s_call!(ref, :persist!, [], context, options)
 
       defoverridable [
         __pool__: 0,

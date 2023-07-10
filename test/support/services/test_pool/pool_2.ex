@@ -10,7 +10,7 @@ defmodule Noizu.Service.Support.TestPool2 do
   def __worker__(), do: Noizu.Service.Support.TestPool2.Worker
   
   def test(identifier, context) do
-    s_call!(identifier, :test, context)
+    s_call!(identifier, :test, [], context)
   end
 end
 
@@ -27,10 +27,10 @@ defmodule Noizu.Service.Support.TestPool2.Worker do
   use Noizu.Service.Worker.Behaviour
   
 
-  def ref_ok({:ref, __MODULE__, _} = ref), do: {:ok, ref}
-  def ref_ok(ref) when is_integer(ref), do: {:ok, {:ref, __MODULE__, ref}}
-  def ref_ok(%__MODULE__{identifier: id}), do: {:ok, {:ref, __MODULE__, id}}
-  def ref_ok(ref), do: {:error, {:unsupported, ref}}
+  def ref({:ref, __MODULE__, _} = ref), do: {:ok, ref}
+  def ref(ref) when is_integer(ref), do: {:ok, {:ref, __MODULE__, ref}}
+  def ref(%__MODULE__{identifier: id}), do: {:ok, {:ref, __MODULE__, id}}
+  def ref(ref), do: {:error, {:unsupported, ref}}
   
   #-----------------------
   #
@@ -38,8 +38,8 @@ defmodule Noizu.Service.Support.TestPool2.Worker do
   def handle_call(msg_envelope() = call, from, state) do
     MessageHandler.unpack_call(call, from, state)
   end
-  def handle_call(s(call: :test, context: context), _, state) do
-    test(state, context)
+  def handle_call(s(call: call(handler: h, args: args), context: context, options: options), _, state) do
+    apply(__MODULE__, h, [state|(args ||[])] ++ [context, options])
   end
   def handle_call(msg, from, state) do
     super(msg, from, state)
@@ -68,7 +68,7 @@ defmodule Noizu.Service.Support.TestPool2.Worker do
   #-----------------------
   #
   #-----------------------
-  def test(state = %Noizu.Service.Worker.State{}, _context, _options \\ nil) do
+  def test(state = %Noizu.Service.Worker.State{}, _context, _options) do
     state = state
             |>update_in([Access.key(:worker), Access.key(:test)], &(&1 + 1))
     {:reply, state.worker.test, state}

@@ -30,10 +30,10 @@ defmodule Noizu.Service.ClusterManager do
   end
   
   def health_report(context) do
-    Router.s_call({:ref, __server__(), :manager}, :health_report, context)
+    Router.s_call({:ref, __server__(), :manager}, :health_report, [], context)
   end
   def configuration(context) do
-    Router.s_call({:ref, __server__(), :manager}, :configuration, context)
+    Router.s_call({:ref, __server__(), :manager}, :configuration, [], context)
   end
 
   def register_pool(pool, pid, status) do

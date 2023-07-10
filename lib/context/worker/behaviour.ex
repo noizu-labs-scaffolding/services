@@ -25,8 +25,8 @@ defmodule Noizu.Service.Worker.Behaviour do
   @callback load(state, context, options) :: response_struct(state)
   @callback reload!(state, context, options) :: reply_response(state | any)
   
-  @callback fetch(state, value :: term, context) :: reply_response(any)
-  @callback ping(state,  context) :: reply_response({:pong, pid})
+  @callback fetch(state, value :: term, context, options) :: reply_response(any)
+  @callback ping(state,  context, options) :: reply_response({:pong, pid})
   @callback kill!(state, context, options) :: noreply_response()
   @callback crash!(state, context, options) :: noreply_response()
   @callback hibernate(state, context, options) :: noreply_response()
@@ -69,53 +69,35 @@ defmodule Noizu.Service.Worker.Behaviour do
         end
       end
 
-      def fetch(%Noizu.Service.Worker.State{} = state, :state, _) do
+      def fetch(%Noizu.Service.Worker.State{} = state, :state, _, _) do
         {:reply, state, state}
       end
-      def fetch(%Noizu.Service.Worker.State{} = state, :process, _) do
+      def fetch(%Noizu.Service.Worker.State{} = state, :process, _, _) do
         {:reply, {state.identifier, node(), self()}, state}
       end
       
-      def ping(state, _, _ \\ nil) do
+      def ping(state, _, _) do
         {:reply, :pong, state}
       end
       
-      def kill!(state, _, _ \\ nil) do
+      def kill!(state, _, _) do
         {:stop, :shutdown, :ok, state}
       end
-      def crash!(state, _, _ \\ nil) do
+      def crash!(state, _, _) do
         throw "User Initiated Crash"
       end
-      def hibernate(state, _, _ \\ nil) do
+      def hibernate(state, _, _) do
         {:reply, :ok, state, :hibernate}
       end
-      def persist!(state, _, _ \\ nil) do
+      def persist!(state, _, _) do
         {:reply, :not_supported, state}
       end
       
       #-----------------------
       #
       #-----------------------
-      def handle_call(M.s(call: {:reload!, options}, context: context), _, state) do
-        reload!(state, context, options)
-      end
-      def handle_call(M.s(call: {:fetch, type}, context: context), _, state) do
-        fetch(state, type, context)
-      end
-      def handle_call(M.s(call: :ping, context: context, options: options), _, state) do
-        ping(state, context, options)
-      end
-      def handle_call(M.s(call: :kill!, context: context, options: options), _, state) do
-        kill!(state, context, options)
-      end
-      def handle_call(M.s(call: :crash!, context: context, options: options), _, state) do
-        crash!(state, context, options)
-      end
-      def handle_call(M.s(call: :hibernate, context: context, options: options), _, state) do
-        hibernate(state, context, options)
-      end
-      def handle_call(M.s(call: :persist!, context: context, options: options), _, state) do
-        persist!(state, context, options)
+      def handle_call(M.s(call: M.call(handler: h, args: args), context: context, options: options), _, state) do
+        apply(__MODULE__, h, [state| (args || []) ] ++ [context, options])
       end
       def handle_call(msg, _, state) do
         {:reply, {:unhandled, msg}, state}
@@ -140,16 +122,11 @@ defmodule Noizu.Service.Worker.Behaviour do
         load: 3,
         reload!: 2,
         reload!: 3,
-        fetch: 3,
-        ping: 2,
+        fetch: 4,
         ping: 3,
-        kill!: 2,
         kill!: 3,
-        crash!: 2,
         crash!: 3,
-        hibernate: 2,
         hibernate: 3,
-        persist!: 2,
         persist!: 3,
         handle_call: 3,
         handle_cast: 2,

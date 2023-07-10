@@ -7,7 +7,7 @@ defmodule Noizu.Service.Test.NodeManager do
       args = ["--name", "#{name}", "--cookie", "#{Node.get_cookie()}", "-S", "mix", "test_node", "#{node()}"]
       System.cmd(cmd, args)
     end)
-    :ok = Noizu.Service.Helpers.wait_for_condition(fn() -> Node.ping(name) == :pong end)
+    {:ok,:ok} = NoizuLabs.Entities.Helpers.wait_for_condition(fn() -> Node.ping(name) == :pong && :ok end)
     task
   end
 

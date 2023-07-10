@@ -15,7 +15,7 @@ defmodule Noizu.Service.RoutingTest do
   test "process across node" do
     Noizu.Service.NodeManager.bring_online(node(), context()) |> Task.yield()
     Noizu.Service.NodeManager.bring_online(:"second@127.0.0.1", context()) |> Task.yield()
-    {_, host, _} = Noizu.Service.Support.TestPool2.fetch(321, :process, context())
+    {_, host, _} = Noizu.Service.Support.TestPool.fetch(321, :process, context())
     assert host == node()
   end
 

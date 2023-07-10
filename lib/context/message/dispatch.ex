@@ -4,7 +4,7 @@ defmodule Noizu.Service.Types.Dispatch do
   require Noizu.EntityReference.Records
   alias Noizu.EntityReference.Records, as: R
 
-  def s_call(ref, call, context, options \\ nil,timeout \\ :default) do
+  def s_call(ref, handler, args, context, options \\ nil,timeout \\ :default) do
       with {:ok, pool} <- recipient_pool(ref) do
         identifier = {self(), :os.system_time(:millisecond)}
         settings = apply(pool, :__call_settings__, [])
@@ -17,12 +17,12 @@ defmodule Noizu.Service.Types.Dispatch do
           type: :call,
           settings: M.settings(settings, spawn?: false, timeout: timeout),
           recipient: ref,
-          msg: M.s(call: call, context: context, options: options)
+          msg: M.s(call: M.call(handler: handler, args: args), context: context, options: options)
         ) |> __dispatch__()
       end
   end
 
-  def s_call!(ref, call, context, options \\ nil, timeout \\ :default) do
+  def s_call!(ref, handler, args, context, options \\ nil, timeout \\ :default) do
     with {:ok, pool} <- recipient_pool(ref) do
       identifier = {self(), :os.system_time(:millisecond)}
       settings = apply(pool, :__call_settings__, [])
@@ -35,12 +35,12 @@ defmodule Noizu.Service.Types.Dispatch do
         type: :call,
         settings: M.settings(settings, spawn?: true, timeout: timeout),
         recipient: ref,
-        msg: M.s(call: call, context: context, options: options)
+        msg: M.s(call:  M.call(handler: handler, args: args), context: context, options: options)
       ) |> __dispatch__()
     end
   end
 
-  def s_cast(ref, call, context, options \\ nil, timeout \\ :default) do
+  def s_cast(ref, handler, args, context, options \\ nil, timeout \\ :default) do
     with {:ok, pool} <- recipient_pool(ref) do
       identifier = {self(), :os.system_time(:millisecond)}
       settings = apply(pool, :__cast_settings__, [])
@@ -53,13 +53,13 @@ defmodule Noizu.Service.Types.Dispatch do
         type: :cast,
         settings: M.settings(settings, spawn?: false, timeout: timeout),
         recipient: ref,
-        msg: M.s(call: call, context: context, options: options)
+        msg: M.s(call:  M.call(handler: handler, args: args), context: context, options: options)
       ) |> __dispatch__()
     end
   end
 
 
-  def s_cast!(ref, call, context, options \\ nil, timeout \\ :default) do
+  def s_cast!(ref, handler, args, context, options \\ nil, timeout \\ :default) do
     with {:ok, pool} <- recipient_pool(ref) do
       identifier = {self(), :os.system_time(:millisecond)}
       settings = apply(pool, :__cast_settings__, [])
@@ -72,7 +72,7 @@ defmodule Noizu.Service.Types.Dispatch do
         type: :cast,
         settings: M.settings(settings, spawn?: true, timeout: timeout),
         recipient: ref,
-        msg: M.s(call: call, context: context, options: options)
+        msg: M.s(call:  M.call(handler: handler, args: args), context: context, options: options)
       ) |> __dispatch__()
     end
   end

@@ -58,10 +58,10 @@ defmodule Noizu.Service.NodeManager do
   end
   
   def health_report(node, context) do
-    Router.s_call({:ref, __server__(), node}, :health_report, context)
+    Router.s_call({:ref, __server__(), node}, :health_report, [], context)
   end
   def configuration(node, context) do
-    Router.s_call({:ref, __server__(), node}, :configuration, context)
+    Router.s_call({:ref, __server__(), node}, :configuration, [], context)
   end
 
   def bring_online(node, context) do

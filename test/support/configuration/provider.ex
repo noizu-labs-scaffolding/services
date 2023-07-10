@@ -53,7 +53,8 @@ defmodule Noizu.Service.Support.NodeManager.ConfigurationProvider do
   def cached(node), do: configuration(node)
   def cached(), do: configuration()
 
-  def cache(node, _), do: configuration(node)
-  def cache(_), do: configuration()
-end
 
+  def cache(contents), do: contents
+  def cache(_, contents), do: contents
+
+end

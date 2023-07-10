@@ -80,11 +80,9 @@ defmodule Noizu.Service.NodeManager.Server do
   def handle_call(msg_envelope() = call, from, state) do
     MessageHandler.unpack_call(call, from, state)
   end
-  def handle_call(s(call: :health_report, context: context), _, state) do
-    health_report(state, context)
-  end
-  def handle_call(s(call: :configuration, context: context), _, state) do
-    configuration(state, context)
+  def handle_call(s(call: call(handler: h, args: args), context: context, options: options), _, state) do
+    call_args = [state | (args || [])] ++ [context, options]
+    apply(__MODULE__, h, call_args)
   end
   def handle_call(call, from, state), do: MessageHandler.uncaught_call(call, from, state)
   
@@ -118,18 +116,15 @@ defmodule Noizu.Service.NodeManager.Server do
   #
   #================================
 
-
-  Noizu.Service.NodeManager.Task
   #================================
   # Methods
   #================================
   
   
-  def health_report(state, _context) do
+  def health_report(state, _,_) do
     {:reply, state.health_report, state}
   end
-
-  def configuration(state, _context) do
+  def configuration(state, _,_) do
     {:reply, state.node_config, state}
   end
   

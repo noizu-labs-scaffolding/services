@@ -24,9 +24,6 @@ defmodule Noizu.Service.Server.DefaultServer do
     }
   end
 
-  def handle_call(Noizu.Service.Types.msg_envelope(msg: {:s, :hello, context}), _, state) do
-    {:reply, :world, state}
-  end
   def handle_call(msg, _from, state) do
     {:reply, {:uncaught, msg, state}, state}
   end

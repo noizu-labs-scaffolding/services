@@ -1,0 +1,6 @@
+%{
+  "junit_formatter": {:hex, :junit_formatter, "3.3.1", "c729befb848f1b9571f317d2fefa648e9d4869befc4b2980daca7c1edc468e40", [:mix], [], "hexpm", "761fc5be4b4c15d8ba91a6dafde0b2c2ae6db9da7b8832a55b5a1deb524da72b"},
+  "noizu_labs_core": {:hex, :noizu_labs_core, "0.1.0", "b4b1c7b1078e708be07ed33fb7463ea740f2f2e192c0f9a194f613c0aa879186", [:mix], [], "hexpm", "6b104d1e7707cb69a0d1396098c049dd614d725becb492f4a01f533dabd5631a"},
+  "noizu_labs_entities": {:hex, :noizu_labs_entities, "0.1.0", "8282fc724e1c7ac297ee4e0a89b672d3516fd1d562989029d7cb92f08be8ec40", [:mix], [{:noizu_labs_core, "~> 0.1", [hex: :noizu_labs_core, repo: "hexpm", optional: false]}, {:poison, "~> 3.1.0", [hex: :poison, repo: "hexpm", optional: true]}], "hexpm", "8d14d793acfad3382c633b3a8080eac4f9227008b5f0af11c0c994853beb9d4d"},
+  "syn": {:hex, :syn, "3.3.0", "4684a909efdfea35ce75a9662fc523e4a8a4e8169a3df275e4de4fa63f99c486", [:rebar3], [], "hexpm", "e58ee447bc1094bdd21bf0acc102b1fbf99541a508cd48060bf783c245eaf7d6"},
+}
