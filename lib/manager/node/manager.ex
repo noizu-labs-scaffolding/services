@@ -90,7 +90,8 @@ defmodule Noizu.Service.NodeManager do
           # Ensure we have joined all pools - somewhat temp logic
           cluster_config = Noizu.Service.ClusterManager.configuration(context)
           pools = Enum.map(cluster, fn({pool, _}) -> pool end)
-          (Enum.map(cluster_config, fn({pool, _}) -> pool end) -- pools)
+          #(Enum.map(cluster_config, fn({pool, _}) -> pool end) -- pools)
+          (pools)
           |> Enum.map(
                fn(pool) ->
                  :syn.add_node_to_scopes([apply(pool, :__pool__, []), apply(pool, :__registry__, [])])

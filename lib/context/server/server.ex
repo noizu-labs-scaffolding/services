@@ -3,6 +3,10 @@ defmodule Noizu.Service.Server do
   defmacro default() do
     quote do
       defmodule Server do
+        require Noizu.Service.Types
+        require Noizu.EntityReference.Records
+        import Noizu.Core.Helpers
+
         @pool Module.split(__MODULE__) |> Enum.slice(0..-2) |> Module.concat()
               #|> IO.inspect(label: :server)
         

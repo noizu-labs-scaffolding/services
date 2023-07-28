@@ -2,7 +2,7 @@ defmodule Noizu.Service do
   @moduledoc """
     Manages a standalone server or large cluster of persistent workers.
   """
-  
+
   require Record
   require Noizu.Service.Types
   alias Noizu.Service.Types, as: M
@@ -10,7 +10,8 @@ defmodule Noizu.Service do
   alias Noizu.EntityReference.Records, as: R
   require Noizu.Service.NodeManager.ConfigurationManagerBehaviour
   alias Noizu.Service.NodeManager.ConfigurationManagerBehaviour, as: Config
-  
+  import Noizu.Core.Helpers
+
   def default_worker_sup_target() do
     Config.target_window(low: 500, target: 2_500, high: 5_000)
   end
@@ -105,8 +106,10 @@ defmodule Noizu.Service do
         with {:ok, ref} <- apply(__worker__(), :ref, [ref]) do
           Noizu.Service.get_direct_link!(__pool__(), ref, context, options)
         end
-        
-        
+      end
+
+      def bring_workers_online(context) do
+        :ok
       end
 
       def bring_online(context) do
@@ -115,15 +118,9 @@ defmodule Noizu.Service do
           updated_status = Noizu.Service.NodeManager.pool_status(status, status: :online, health: 1.0)
           :syn.register(Noizu.Service.NodeManager, {node(), __pool__()}, pid, updated_status)
           :syn.join(Noizu.Service.ClusterManager, {:service, __pool__()}, pid, updated_status)
-          
+          bring_workers_online(context)
         end
         # |> IO.inspect(label: "bring_online: #{__pool__()}")
-
-
-        
-
-
-
       end
       
       def add_worker_supervisor(node, spec) do
@@ -181,6 +178,7 @@ defmodule Noizu.Service do
       def reload!(ref, context, options), do: s_call!(ref, :reload!, [], context, options)
       def fetch(ref, type, context, options \\ nil), do: s_call!(ref, :fetch, [type], context, options)
       def ping(ref, context, options \\ nil), do: s_call(ref, :ping, [], context, options)
+      def wake!(ref, context, options \\ nil), do: s_cast!(ref, :wake!, [], context, options)
       def kill!(ref, context, options), do: s_call(ref, :kill!, [], context, options)
       def crash!(ref, context, options), do: s_call(ref, :crash!, [], context, options)
       def hibernate(ref, context, options), do: s_call!(ref, :hibernate, [], context, options)
@@ -205,6 +203,7 @@ defmodule Noizu.Service do
         spec: 2,
         get_direct_link!: 2,
         get_direct_link!: 3,
+        bring_workers_online: 1,
         bring_online: 1,
         add_worker_supervisor: 2,
         add_worker: 2,
@@ -217,6 +216,8 @@ defmodule Noizu.Service do
         fetch: 3,
         ping: 3,
         ping: 2,
+        wake!: 2,
+        wake!: 3,
         kill!: 3,
         crash!: 3,
         hibernate: 3,
