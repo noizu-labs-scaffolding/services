@@ -143,9 +143,19 @@ defmodule Noizu.Service.Worker.Behaviour do
 
   def shallow_persist(m, worker, context, options)
   def shallow_persist(m, %{__struct__: Noizu.Service.Worker.State, worker: worker, status: :loaded} = state, context, options) do
-    shallow_persist(m, worker, context, options)
+    w = shallow_persist(m, worker, context, options)
+    %{state| worker: w}
   end
   def shallow_persist(_, worker, context, options) do
+    apply(@entity_repo, :update, [worker, context, options])
+  end
+
+  def persist(m, worker, context, options)
+  def persist(m, %{__struct__: Noizu.Service.Worker.State, worker: worker, status: :loaded} = state, context, options) do
+    w = persist(m, worker, context, options)
+    %{state| worker: w}
+  end
+  def persist(_, worker, context, options) do
     apply(@entity_repo, :update, [worker, context, options])
   end
 
@@ -277,6 +287,9 @@ defmodule Noizu.Service.Worker.Behaviour do
       def shallow_persist(worker_or_state, context, options) do
         apply(Noizu.Service.Worker.Behaviour, :shallow_persist, [__MODULE__, worker_or_state, context, options])
       end
+      def persist(worker_or_state, context, options) do
+        apply(Noizu.Service.Worker.Behaviour, :persist, [__MODULE__, worker_or_state, context, options])
+      end
       def persist_changes(state, context, options) do
         apply(Noizu.Service.Worker.Behaviour, :persist_changes, [__MODULE__, state, context, options])
       end
@@ -346,6 +359,7 @@ defmodule Noizu.Service.Worker.Behaviour do
         __mark__: 4,
         __check__: 4,
         __persist__?: 3,
+        persist: 3,
         shallow_persist: 3,
         persist_changes: 3,
 
