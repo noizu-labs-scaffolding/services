@@ -22,7 +22,7 @@ defmodule Noizu.Service.Types do
   Record.defrecord(:s, call: nil, context: nil, options: nil)
 
   # Call
-  Record.defrecord(:call, handler: nil, args: nil)
+  Record.defrecord(:call, handler: nil, args: [])
 
   # Msg Envelope
   Record.defrecord(:msg_envelope,

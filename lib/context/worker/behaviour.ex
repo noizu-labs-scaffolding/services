@@ -56,7 +56,7 @@ defmodule Noizu.Service.Worker.Behaviour do
     apply(m, :__post_handle_call__, [o, context, options] )
   end
   def handle_call(m, msg, from, state) do
-    IO.inspect(msg, label: "#{m} UNCAUGHT CALL")
+    IO.inspect(msg, label: "[UNCAUGHT] CALL #{m}")
     {:reply, {:unhandled, msg}, state}
   end
 
@@ -71,7 +71,7 @@ defmodule Noizu.Service.Worker.Behaviour do
     apply(m, :__post_handle_cast__, [o, context, options] )
   end
   def handle_cast(m, msg, state) do
-    IO.inspect(msg, label: "#{m} UNCAUGHT CAST")
+    IO.inspect(msg, label: "[UNCAUGHT] CAST #{m}")
     {:noreply, state}
   end
 
@@ -82,11 +82,11 @@ defmodule Noizu.Service.Worker.Behaviour do
     MessageHandler.unpack_info(call, state)
   end
   def handle_info(m, M.s(call: M.call(handler: h, args: args), context: context, options: options), state) do
-    o = apply(__MODULE__, h, [state | (args || [])] ++ [context, options])
+    o = apply(m, h, [state | (args || [])] ++ [context, options])
     apply(m, :__post_handle_info__, [o, context, options] )
   end
   def handle_info(m, msg, state) do
-    IO.inspect(msg, label: "#{m} UNCAUGHT INFO")
+    IO.inspect(msg, label: "[UNCAUGHT] INFO #{m}")
     {:noreply, state}
   end
 
@@ -148,6 +148,7 @@ defmodule Noizu.Service.Worker.Behaviour do
   end
   def shallow_persist(_, worker, context, options) do
     apply(@entity_repo, :update, [worker, context, options])
+    worker
   end
 
   def persist(m, worker, context, options)
