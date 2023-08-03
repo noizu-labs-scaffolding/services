@@ -10,6 +10,7 @@ defmodule Noizu.Services.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      description: description(),
       package: package(),
       test_coverage: [
         summary: [
@@ -22,6 +23,12 @@ defmodule Noizu.Services.MixProject do
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
+
+
+
+  defp description() do
+    "Long Lived Services Scaffolding libraries"
+  end
 
 
   defp package() do
