@@ -36,6 +36,7 @@ defmodule Noizu.Service.Worker.Server do
     gen_server = options[:server] || Noizu.Service.Worker.Server
     %{
       id: ref,
+      restart: :permanent,
       type: :worker,
       start: {gen_server, :start_link, [ref, [args], context]}
     }
