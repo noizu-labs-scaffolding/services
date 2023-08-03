@@ -10,6 +10,7 @@ defmodule Noizu.Services.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      package: package(),
       test_coverage: [
         summary: [
           threshold: 0
@@ -21,6 +22,20 @@ defmodule Noizu.Services.MixProject do
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
+
+
+  defp package() do
+    [
+      licenses: ["MIT"],
+      links: %{
+        project: "https://github.com/noizu-labs-scaffolding/services",
+        noizu_labs: "https://github.com/noizu-labs",
+        noizu_labs_ml: "https://github.com/noizu-labs-ml",
+        noizu_labs_scaffolding: "https://github.com/noizu-labs-scaffolding",
+        developer: "https://github.com/noizu"
+      }
+    ]
+  end
 
 
   # Run "mix help compile.app" to learn about applications.
