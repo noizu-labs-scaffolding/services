@@ -159,7 +159,7 @@ defmodule Noizu.Service.Types.Dispatch do
     recipient_ref(recipient)
   end
   def recipient_ref(recipient) do
-    {:error, {:unsupported, recipient}}
+    {:error, {:unsupported, {:recipient, recipient}}}
   end
   
   
