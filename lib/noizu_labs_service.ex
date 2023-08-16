@@ -175,14 +175,14 @@ defmodule Noizu.Service do
         end
       end
       
-      def reload!(ref, context, options), do: s_call!(ref, :reload!, [], context, options)
+      def reload!(ref, context, options \\ nil), do: s_call!(ref, :reload!, [], context, options)
       def fetch(ref, type, context, options \\ nil), do: s_call!(ref, :fetch, [type], context, options)
       def ping(ref, context, options \\ nil), do: s_call(ref, :ping, [], context, options)
       def wake!(ref, context, options \\ nil), do: s_cast!(ref, :wake!, [], context, options)
-      def kill!(ref, context, options), do: s_call(ref, :kill!, [], context, options)
-      def crash!(ref, context, options), do: s_call(ref, :crash!, [], context, options)
-      def hibernate(ref, context, options), do: s_call!(ref, :hibernate, [], context, options)
-      def persist!(ref, context, options), do: s_call!(ref, :persist!, [], context, options)
+      def kill!(ref, context, options \\ nil), do: s_call(ref, :kill!, [], context, options)
+      def crash!(ref, context, options \\ nil), do: s_call(ref, :crash!, [], context, options)
+      def hibernate(ref, context, options \\ nil), do: s_call!(ref, :hibernate, [], context, options)
+      def persist!(ref, context, options \\ nil), do: s_call!(ref, :persist!, [], context, options)
 
       defoverridable [
         __pool__: 0,
