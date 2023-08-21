@@ -235,9 +235,9 @@ defmodule Noizu.Service.Worker.Behaviour do
 
       def reload!(%Noizu.Service.Worker.State{} = state, context, options \\ nil) do
         with {:ok, state} <- load(state, context, options) do
-          {:noreply, state}
+          {:reply, state, state}
         else
-          _ -> {:noreply, state}
+          error -> {:noreply, error, state}
         end
       end
 
