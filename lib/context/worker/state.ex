@@ -1,7 +1,7 @@
 defmodule Noizu.Service.Worker.State do
   @vsn 1.0
   defstruct [
-    identifier: nil,
+    id: nil,
     handler: nil,
     status: nil,
     status_info: nil,

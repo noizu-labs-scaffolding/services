@@ -11,7 +11,7 @@ defmodule Noizu.Service.NodeManager.Server do
   #===========================================
   @pool Noizu.Service.NodeManager
   defstruct [
-    identifier: nil,
+    id: nil,
     health_report: :pending_node_report,
     node_config: [],
     meta: []
@@ -44,7 +44,7 @@ defmodule Noizu.Service.NodeManager.Server do
                      end)
     
     init_registry(context, options)
-    {:ok, %Noizu.Service.NodeManager.Server{identifier: node(), node_config: configuration}}
+    {:ok, %Noizu.Service.NodeManager.Server{id: node(), node_config: configuration}}
   end
   
   def spec(context, options \\ nil) do

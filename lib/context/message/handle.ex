@@ -7,7 +7,7 @@ defmodule Noizu.Service.Types.Handle do
   def recipient_check(M.msg_envelope(recipient: recipient), _from, %Noizu.Service.Worker.State{} = worker) do
     with {:ok, ref} <- Noizu.Service.Types.Dispatch.recipient_ref(recipient) do
         cond do
-          ref == worker.identifier -> :ok
+          ref == worker.id -> :ok
           :else -> {:error, :redirect}
         end
     else
@@ -23,7 +23,7 @@ defmodule Noizu.Service.Types.Handle do
   def recipient_check(M.msg_envelope(recipient: recipient), %Noizu.Service.Worker.State{} = worker) do
     with {:ok, ref} <- Noizu.Service.Types.Dispatch.recipient_ref(recipient) do
       cond do
-        ref == worker.identifier -> :ok
+        ref == worker.id -> :ok
         :else -> {:error, :redirect}
       end
     else

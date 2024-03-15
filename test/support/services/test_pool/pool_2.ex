@@ -21,7 +21,7 @@ defmodule Noizu.Service.Support.TestPool2.Worker do
   alias Noizu.Service.Types.Handle, as: MessageHandler
   
   defstruct [
-    identifier: nil,
+    id: nil,
     test: 0
   ]
   use Noizu.Service.Worker.Behaviour
@@ -29,7 +29,7 @@ defmodule Noizu.Service.Support.TestPool2.Worker do
 
   def ref({:ref, __MODULE__, _} = ref), do: {:ok, ref}
   def ref(ref) when is_integer(ref), do: {:ok, {:ref, __MODULE__, ref}}
-  def ref(%__MODULE__{identifier: id}), do: {:ok, {:ref, __MODULE__, id}}
+  def ref(%__MODULE__{id: id}), do: {:ok, {:ref, __MODULE__, id}}
   def ref(ref), do: {:error, {:unsupported, ref}}
   
   #-----------------------

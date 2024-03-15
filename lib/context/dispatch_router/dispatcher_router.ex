@@ -6,7 +6,7 @@ defmodule Noizu.Service.DispatcherRouter do
   alias Noizu.EntityReference.Records, as: R
 
 
-  def __lookup_worker_process__(ref = R.ref(module: worker, identifier: identifier)) do
+  def __lookup_worker_process__(ref = R.ref(module: worker, id: identifier)) do
     registry = apply(worker, :__registry__, [])
     with {pid, info} <- :syn.lookup(registry, {:worker, ref}) do
       {:ok, {pid, info}}
@@ -18,7 +18,7 @@ defmodule Noizu.Service.DispatcherRouter do
   def __process__(message, _ \\ nil)
   def __process__(
         M.msg_envelope(
-          recipient: ref = R.ref(module: worker, identifier: identifier),
+          recipient: ref = R.ref(module: worker, id: identifier),
           msg: msg,
           settings: settings
         ) = message,

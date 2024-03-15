@@ -5,7 +5,7 @@ defmodule Noizu.Service.Worker.Server do
   require Noizu.EntityReference.Records
   alias Noizu.EntityReference.Records, as: R
   require Logger
-  def start_link(ref = R.ref(module: m, identifier: id), args, context) do
+  def start_link(ref = R.ref(module: m, id: id), args, context) do
     #IO.puts "STARTING: #{inspect m}"
     pool = apply(m, :__pool__, [])
     mod = pool.config()[:otp][:worker_server] || __MODULE__
@@ -13,7 +13,7 @@ defmodule Noizu.Service.Worker.Server do
     # |> IO.inspect(label: "#{pool}.worker.server start_link")
   end
 
-  def terminate(reason, %{identifier: R.ref(module: worker, identifier: id)} = state) do
+  def terminate(reason, %{id: R.ref(module: worker, id: id)} = state) do
     Logger.warning("[#{worker}.start] #{inspect id}")
     super(reason, state)
   end
@@ -21,7 +21,7 @@ defmodule Noizu.Service.Worker.Server do
     super(reason, state)
   end
 
-  def init({ref = R.ref(module: worker, identifier: id), args, context}) do
+  def init({ref = R.ref(module: worker, id: id), args, context}) do
     Logger.info("[#{worker}.start] #{inspect id}")
     init_worker = apply(worker, :init, [ref, args, context])
     pool = apply(worker, :__pool__, [])
@@ -32,7 +32,7 @@ defmodule Noizu.Service.Worker.Server do
 
     
     state = %Noizu.Service.Worker.State{
-      identifier: ref,
+      id: ref,
       handler: worker,
       status: :init,
       status_info: nil,
