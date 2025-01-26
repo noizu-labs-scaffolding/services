@@ -13,7 +13,7 @@ defmodule Noizu.Service.Types.Dispatch do
                     :else -> timeout
                   end
         M.msg_envelope(
-          identifier: identifier,
+          id: identifier,
           type: :call,
           settings: M.settings(settings, spawn?: false, timeout: timeout),
           recipient: ref,
@@ -31,7 +31,7 @@ defmodule Noizu.Service.Types.Dispatch do
                   :else -> timeout
                 end
       M.msg_envelope(
-        identifier: identifier,
+        id: identifier,
         type: :call,
         settings: M.settings(settings, spawn?: true, timeout: timeout),
         recipient: ref,
@@ -49,7 +49,7 @@ defmodule Noizu.Service.Types.Dispatch do
                   :else -> timeout
                 end
       M.msg_envelope(
-        identifier: identifier,
+        id: identifier,
         type: :cast,
         settings: M.settings(settings, spawn?: false, timeout: timeout),
         recipient: ref,
@@ -68,7 +68,7 @@ defmodule Noizu.Service.Types.Dispatch do
                   :else -> timeout
                 end
       M.msg_envelope(
-        identifier: identifier,
+        id: identifier,
         type: :cast,
         settings: M.settings(settings, spawn?: true, timeout: timeout),
         recipient: ref,
@@ -78,7 +78,7 @@ defmodule Noizu.Service.Types.Dispatch do
   end
   
   
-  def __dispatch__(M.msg_envelope(identifier: identifier, settings: settings) = message) do
+  def __dispatch__(M.msg_envelope(id: identifier, settings: settings) = message) do
     case as_task(settings) do
       false -> __dispatch__inner(message)
       nil -> __dispatch__inner(message)

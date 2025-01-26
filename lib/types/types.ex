@@ -26,7 +26,7 @@ defmodule Noizu.Service.Types do
 
   # Msg Envelope
   Record.defrecord(:msg_envelope,
-    identifier: nil,
+    id: nil,
     type: nil,
     recipient: nil,
     settings: nil,

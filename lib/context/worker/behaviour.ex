@@ -225,7 +225,7 @@ defmodule Noizu.Service.Worker.Behaviour do
 
       def init({:ref, __MODULE__, identifier}, args, context) do
         %__MODULE__{
-          identifier: identifier
+          id: identifier
         }
       end
 
@@ -245,7 +245,7 @@ defmodule Noizu.Service.Worker.Behaviour do
         {:reply, state, state}
       end
       def fetch(%Noizu.Service.Worker.State{} = state, :process, _, _) do
-        {:reply, {state.identifier, node(), self()}, state}
+        {:reply, {state.id, node(), self()}, state}
       end
 
       def ping(state, _, _) do
